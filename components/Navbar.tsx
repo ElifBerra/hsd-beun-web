@@ -18,9 +18,7 @@ const Navbar = () => {
               <Link href="/" className="text-gray-300 hover:text-white transition-colors">Ana Sayfa</Link>
               <Link href="/events" className="text-gray-300 hover:text-white transition-colors">Etkinlikler</Link>
               <Link href="/team" className="text-gray-300 hover:text-white transition-colors">Ekibimiz</Link>
-              <Link href="/iletisim" className="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition-all text-white">
-                Bize Katıl
-              </Link>
+              <Link href="/contact" className="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition-all text-white">İletişim</Link>
             </div>
           </div>
         </div>

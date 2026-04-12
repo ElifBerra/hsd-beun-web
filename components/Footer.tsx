@@ -21,8 +21,8 @@ const Footer = () => {
             <h4 className="text-white font-bold mb-6">Keşfet</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
               <li><Link href="/" className="hover:text-red-500 transition-colors">Ana Sayfa</Link></li>
-              <li><Link href="/etkinlikler" className="hover:text-red-500 transition-colors">Etkinlikler</Link></li>
-              <li><Link href="/ekip" className="hover:text-red-500 transition-colors">Ekibimiz</Link></li>
+              <li><Link href="/events" className="hover:text-red-500 transition-colors">Etkinlikler</Link></li>
+              <li><Link href="/team" className="hover:text-red-500 transition-colors">Ekibimiz</Link></li>
             </ul>
           </div>
 
