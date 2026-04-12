@@ -2,6 +2,7 @@
 
 import Events from "@/components/Events";
 import Announcements from "@/components/Announcements";
+import TeamPreview from "@/components/TeamPreview";
 
 export default function Home() {
   const scrollToEvents = () => {
@@ -38,6 +39,7 @@ export default function Home() {
       
       <Events showAllButton={true}/>
       <Announcements />
+      <TeamPreview />
 
     </main>
   );

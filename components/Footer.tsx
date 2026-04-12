@@ -30,9 +30,38 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-bold mb-6">Sosyal Medya</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
-              <li><a href="https://instagram.com" target="_blank" className="hover:text-pink-500 transition-colors text-orange-400">Instagram</a></li>
-              <li><a href="https://linkedin.com" target="_blank" className="hover:text-blue-500 transition-colors">LinkedIn</a></li>
-              <li><a href="https://medium.com" target="_blank" className="hover:text-white transition-colors">Medium</a></li>
+              <li>
+                <a 
+                    href="https://www.instagram.com/hsdbeun" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="hover:text-pink-500 transition-colors "
+                >
+                     Instagram
+                </a>
+              </li>
+
+
+              <li>
+                <a 
+                    href="https://linkedin.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="hover:text-blue-500 transition-colors"
+                    >
+                        LinkedIn
+                </a>
+               </li>
+
+              <li>
+                <a 
+                    href="https://medium.com" 
+                    target="_blank" 
+                    className="hover:text-white transition-colors"
+                    >
+                        Medium
+                </a>
+              </li>
             </ul>
           </div>
 

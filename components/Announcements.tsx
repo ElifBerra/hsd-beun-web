@@ -6,7 +6,7 @@ const Announcements = () => {
       <div className="flex items-center justify-between mb-12">
         <h2 className="text-3xl font-bold">Son Duyurular</h2>
         <Link href="/duyurular" className="text-orange-500 hover:text-orange-400 text-sm font-medium transition-colors">
-          Tümünü Gör →
+          Tüm Duyuruları Gör →
         </Link>
       </div>
 

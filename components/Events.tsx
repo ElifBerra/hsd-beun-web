@@ -33,7 +33,7 @@ const Events = ({ showAllButton = true }) => {
           <>
             <br /><br />
             <Link href="/events" className="text-orange-500 hover:text-orange-400 text-sm font-medium transition-colors">
-              Tümünü Gör →
+              Tüm Etkinlikleri Gör →
             </Link>
           </>
         )}
