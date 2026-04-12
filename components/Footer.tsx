@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Logo ve Motto */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-              HSD ZBEÜ
+              HSD BEUN
             </Link>
             <p className="mt-4 text-gray-400 max-w-sm">
               Geleceği kodlayan, inovasyonla büyüyen ve teknolojiyi tutkuyla takip eden üniversite topluluğu.
@@ -41,7 +41,7 @@ const Footer = () => {
         {/* Alt Çizgi ve Telif */}
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-500 text-xs">
           <p>© 2026 HSD Zonguldak Bülent Ecevit Üniversitesi. Tüm hakları saklıdır.</p>
-          <p className="mt-4 md:mt-0">Design & Code by <span className="text-orange-500 font-medium">Turuncu</span></p>
+          <p className="mt-4 md:mt-0">Design & Code by <span className="text-orange-500 font-medium">Elif Berra Çelik</span></p>
         </div>
       </div>
     </footer>
