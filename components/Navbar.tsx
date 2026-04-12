@@ -16,6 +16,7 @@ const Navbar = () => {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8 text-sm font-medium">
               <Link href="/" className="text-gray-300 hover:text-white transition-colors">Ana Sayfa</Link>
+               <Link href="/about" className="text-gray-300 hover:text-white transition-colors">Hakkımızda</Link>
               <Link href="/events" className="text-gray-300 hover:text-white transition-colors">Etkinlikler</Link>
               <Link href="/team" className="text-gray-300 hover:text-white transition-colors">Ekibimiz</Link>
               <Link href="/contact" className="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition-all text-white">İletişim</Link>

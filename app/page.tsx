@@ -4,6 +4,7 @@ import Events from "@/components/Events";
 import Announcements from "@/components/Announcements";
 import TeamPreview from "@/components/TeamPreview";
 import ContactPreview from "@/components/ContactPreview";
+import AboutSection from "@/components/AboutSection";
 
 export default function Home() {
   const scrollToEvents = () => {
@@ -37,7 +38,7 @@ export default function Home() {
         </div>
       </section>
 
-      
+      <AboutSection />
       <Events showAllButton={true}/>
       <Announcements />
       <TeamPreview />
