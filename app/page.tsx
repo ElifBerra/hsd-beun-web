@@ -5,6 +5,7 @@ import Announcements from "@/components/Announcements";
 import TeamPreview from "@/components/TeamPreview";
 import ContactPreview from "@/components/ContactPreview";
 import AboutSection from "@/components/AboutSection";
+import Link from 'next/link';
 
 export default function Home() {
   const scrollToEvents = () => {
@@ -25,9 +26,13 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
-          <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105">
-            Topluluğa Katıl
-          </button>
+          <Link 
+            href="/join"
+            className="bg-red-600 hover:bg-orange-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-[0_10px_20px_-10px_rgba(220,38,38,0.5)] flex items-center justify-center"
+              >
+               Topluluğa Katıl
+          </Link>
+          
           {/* BUTON */}
           <button 
             onClick={scrollToEvents}

@@ -44,7 +44,7 @@ const Footer = () => {
 
               <li>
                 <a 
-                    href="https://linkedin.com" 
+                    href="https://www.linkedin.com/company/hsd-zonguldak-b%C3%BClent-ecevit-university" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="hover:text-blue-500 transition-colors"
@@ -55,8 +55,9 @@ const Footer = () => {
 
               <li>
                 <a 
-                    href="https://medium.com" 
+                    href="https://medium.com/@hsdzbeun" 
                     target="_blank" 
+                    rel="noopener noreferrer" 
                     className="hover:text-white transition-colors"
                     >
                         Medium
