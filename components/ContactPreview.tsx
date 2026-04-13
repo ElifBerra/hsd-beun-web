@@ -1,133 +1,134 @@
 "use client";
+import { useState } from 'react';
 
-import { useState } from "react";
-
-const ContactPreview = () => {
+export default function ContactPreview() {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
+    FullName: '',
+    Email: '',
+    Subject: '',
+    MessageBody: ''
   });
+  
+  const [status, setStatus] = useState({ loading: false, message: '', isSuccess: false });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Mesajınız iletildi! Turuncu ekibimiz size en kısa sürede dönecek. 🚀");
+    setStatus({ loading: true, message: '', isSuccess: false });
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setStatus({ loading: false, message: 'Mesajın başarıyla ulaştı! En kısa sürede dönüş yapacağız. 🚀', isSuccess: true });
+        setFormData({ FullName: '', Email: '', Subject: '', MessageBody: '' }); // Formu temizle
+        
+        // 5 saniye sonra başarı mesajını gizle
+        setTimeout(() => setStatus({ loading: false, message: '', isSuccess: false }), 5000);
+      } else {
+        const errorData = await res.json();
+        setStatus({ loading: false, message: errorData.error || 'Bir hata oluştu, lütfen tekrar dene.', isSuccess: false });
+      }
+    } catch (error) {
+      console.error("Gönderim hatası:", error);
+      setStatus({ loading: false, message: 'Sunucuya ulaşılamadı.', isSuccess: false });
+    }
   };
 
   return (
-    <section className="max-w-6xl w-full px-4 py-24 border-t border-white/5">
-      {/* Başlık - Ana sayfaya uygun hale getirdik */}
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-600 bg-clip-text text-transparent italic">
-          Bize Ulaşın
-        </h2>
-        <p className="text-gray-400 max-w-xl mx-auto">
-          HSD BEUN dünyasına adım atmak veya sorularınızı iletmek için formu doldurabilirsiniz.
-        </p>
-      </div>
-
-      {/* İletişim Kartı - İletişim sayfasındakinin aynısı */}
-      <div className="bg-[#0a0a0a] border border-white/5 rounded-[40px] overflow-hidden flex flex-col md:flex-row shadow-[0_0_50px_-12px_rgba(234,88,12,0.2)]">
-        
-        {/* Sol Panel - Turuncu Gradient */}
-        <div className="md:w-1/3 bg-gradient-to-br from-orange-600 via-orange-800 to-black p-12 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute -top-20 -left-20 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl" />
+    <section className="py-24 bg-black border-t border-white/5">
+      <div className="container mx-auto px-6">
+        <div className="max-w-4xl mx-auto bg-zinc-950/50 border border-white/5 rounded-[3rem] p-10 md:p-16 relative overflow-hidden">
           
-          <div className="relative z-10">
-            <h2 className="text-3xl font-bold text-white mb-6">İletişim Bilgileri</h2>
-            <p className="text-orange-100/80 text-sm leading-relaxed mb-12">
-              BEUN kampüsündeki teknoloji üssümüze bir mesaj uzağındasınız.
+          {/* Arka Plan Süslemesi */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+          <div className="text-center mb-12 relative z-10">
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter italic uppercase leading-none">
+              BİZİMLE <br /> <span className="text-orange-600">İLETİŞİME GEÇ</span>
+            </h2>
+            <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] mt-6">
+              Fikirlerini ve sorularını bizimle paylaş
             </p>
-
-            <div className="space-y-8">
-              <div className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-xl group-hover:bg-white/20 transition-all text-orange-400">
-                  📍
-                </div>
-                <div>
-                  <p className="text-white font-bold text-sm">Adres</p>
-                  <p className="text-orange-100/60 text-xs">BEUN Mühendislik Fakültesi, Zonguldak</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-xl group-hover:bg-white/20 transition-all text-orange-400">
-                  ✉️
-                </div>
-                <div>
-                  <p className="text-white font-bold text-sm">Email</p>
-                  <p className="text-orange-100/60 text-xs">hsdbeun@gmail.com</p>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div className="relative z-10 mt-12">
-            <p className="text-white font-bold text-sm mb-4">Takip Et</p>
-            <div className="flex gap-4">
-              <div className="w-11 h-11 bg-white/10 hover:bg-orange-500 rounded-full flex items-center justify-center cursor-pointer transition-all border border-white/10">📸</div>
-              <div className="w-11 h-11 bg-white/10 hover:bg-orange-500 rounded-full flex items-center justify-center cursor-pointer transition-all border border-white/10">🔗</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Sağ Panel - Form (Tam Versiyon) */}
-        <div className="md:w-2/3 p-12 bg-black/40 backdrop-blur-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-gray-400 text-sm font-medium ml-1">Ad Soyad</label>
+              <div>
+                <label className="block text-zinc-500 text-xs font-bold uppercase tracking-widest mb-2">Ad Soyad</label>
                 <input 
                   type="text" 
-                  placeholder="Adınız Soyadınız"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 transition-all placeholder:text-gray-600"
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  name="FullName"
+                  value={formData.FullName}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                  placeholder="Elif Turuncu"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-gray-400 text-sm font-medium ml-1">E-posta</label>
+              <div>
+                <label className="block text-zinc-500 text-xs font-bold uppercase tracking-widest mb-2">E-Posta</label>
                 <input 
                   type="email" 
-                  placeholder="ornek@email.com"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 transition-all placeholder:text-gray-600"
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  name="Email"
+                  value={formData.Email}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                  placeholder="elif@ornek.com"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-gray-400 text-sm font-medium ml-1">Konu</label>
+            <div>
+              <label className="block text-zinc-500 text-xs font-bold uppercase tracking-widest mb-2">Konu</label>
               <input 
                 type="text" 
-                placeholder="Mesajınızın konusu"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 transition-all placeholder:text-gray-600"
-                onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                name="Subject"
+                value={formData.Subject}
+                onChange={handleChange}
+                className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                placeholder="Neyden bahsetmek istersin?"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-gray-400 text-sm font-medium ml-1">Mesajınız</label>
+            <div>
+              <label className="block text-zinc-500 text-xs font-bold uppercase tracking-widest mb-2">Mesajın</label>
               <textarea 
-                rows={4}
-                placeholder="Bize iletmek istediklerinizi buraya yazın..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 transition-all resize-none placeholder:text-gray-600"
-                onChange={(e) => setFormData({...formData, message: e.target.value})}
-              />
+                name="MessageBody"
+                value={formData.MessageBody}
+                onChange={handleChange}
+                required
+                rows={5}
+                className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                placeholder="Mesajını buraya yazabilirsin..."
+              ></textarea>
             </div>
+
+            {status.message && (
+              <div className={`p-4 rounded-2xl font-bold text-sm text-center italic ${status.isSuccess ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                {status.message}
+              </div>
+            )}
 
             <button 
-              type="submit"
-              className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-5 rounded-2xl transition-all transform active:scale-[0.98] shadow-[0_10px_20px_-10px_rgba(234,88,12,0.5)]"
+              type="submit" 
+              disabled={status.loading}
+              className="w-full bg-orange-600 text-black font-black uppercase tracking-[0.2em] py-5 rounded-2xl hover:bg-orange-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Mesajı Gönder 🚀
+              {status.loading ? 'GÖNDERİLİYOR...' : 'MESAJI GÖNDER'}
             </button>
           </form>
+          
         </div>
-
       </div>
     </section>
   );
-};
-
-export default ContactPreview;
+}
