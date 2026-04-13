@@ -8,6 +8,7 @@ import AboutSection from "@/components/AboutSection";
 import Link from 'next/link';
 import Publications from "@/components/Publications";
 import Sponsors from "@/components/Sponsors";
+import GallerySphere from "@/components/GallerySphere";
 
 export default function Home() {
   const scrollToEvents = () => {
@@ -51,6 +52,7 @@ export default function Home() {
       <Publications limit={3} showReadMore={true} />
       <TeamPreview />
       <Sponsors />
+      <GallerySphere />
       <ContactPreview />
 
     </main>
