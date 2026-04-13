@@ -1,76 +1,93 @@
 "use client";
 
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 
 const GallerySphere = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<null | any>(null);
+  const [isMounted, setIsMounted] = useState(false); // Hydration hatası için
+  const [dbPhotos, setDbPhotos] = useState<any[]>([]); // DB'den gelen veriler
+  
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // 3D Sürükleme eksenleri
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
 
-  // Pürüzsüz dönme (Spring) ayarları
   const smoothX = useSpring(rotateX, { stiffness: 60, damping: 20 });
   const smoothY = useSpring(rotateY, { stiffness: 60, damping: 20 });
 
-  const basePhotos = [
-    { id: 1, title: "Workshop 2026", color: "from-orange-500", desc: "Geleceğe yön veren teknolojileri tartıştığımız ilham verici bir atölye çalışması." },
-    { id: 2, title: "Ekip Toplantısı", color: "from-red-600", desc: "HSD BEUN ekibinin yeni projeler ve etkinlikler için bir araya geldiği verimli bir toplantı." },
-    { id: 3, title: "Huawei Cloud Day", color: "from-blue-500", desc: "Huawei Cloud teknolojilerini ve sunduğu çözümleri derinlemesine incelediğimiz bir eğitim günü." },
-    { id: 4, title: "Teknopark Ziyareti", color: "from-green-500", desc: "Zonguldak Teknopark'taki yenilikçi girişimleri ve projeleri yerinde inceleme fırsatı bulduğumuz bir gezi." },
-    { id: 5, title: "Sui 102 Eğitimi", color: "from-purple-600", desc: "Blockchain ve akıllı kontratlar konusunda bilgi edindiğimiz detaylı bir Sui 102 eğitimi." },
-    { id: 6, title: "Dev Summit", color: "from-yellow-500", desc: "Yazılım geliştiricilerin bir araya gelerek son teknolojileri ve trendleri tartıştığı büyük bir etkinlik." },
-    { id: 7, title: "HSD Turkey Summit", color: "from-pink-600", desc: "Türkiye genelindeki HSD ekiplerinin tecrübe paylaşımı ve ağ kurma fırsatı bulduğu ulusal bir zirve." },
-    { id: 8, title: "ZBEÜ Lab", color: "from-cyan-600", desc: "Zonguldak Bülent Ecevit Üniversitesi'ndeki laboratuvarımızda gerçekleştirdiğimiz uygulama ve araştırma çalışmaları." },
-  ];
+  const TOTAL_PHOTOS = 250; // İstediğin 250 kare
+  const SPHERE_RADIUS = 600;
 
-  const TOTAL_PHOTOS = 200; 
-  const SPHERE_RADIUS = 600; 
+  // 1. Veritabanından Verileri Çek ve Hydration Korumasını Aç
+  useEffect(() => {
+    setIsMounted(true);
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/events');
+        const data = await response.json();
+        setDbPhotos(data);
+      } catch (error) {
+        console.error("Veri çekme hatası:", error);
+      }
+    };
+    fetchEvents();
+  }, []);
 
-  // Fibonacci Küre Algoritması
+  // 2. Küre Hesaplama (Sadece istemci tarafında ve veriler gelince)
   const spherePhotos = useMemo(() => {
+    if (!isMounted) return [];
+
     const photosArray = [];
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
-    const goldenAngle = 360 / (goldenRatio * goldenRatio); 
+    const goldenAngle = (2 - goldenRatio) * 360; 
+
+    // DB'den veri gelmediyse boş kalmasın diye fallback (yedek) renkler
+    const colors = ["from-orange-500", "from-blue-500", "from-red-600", "from-green-500", "from-purple-600"];
 
     for (let i = 0; i < TOTAL_PHOTOS; i++) {
       const y = 1 - (i / (TOTAL_PHOTOS - 1)) * 2; 
-      const lat = Math.asin(y) * (180 / Math.PI);
-      const lon = goldenAngle * i;
+      const radiusAtY = Math.sqrt(1 - y * y);
+      const theta = goldenAngle * i;
 
-      const randomBase = basePhotos[Math.floor(Math.random() * basePhotos.length)];
+      const lon = theta % 360;
+      const lat = Math.asin(y) * (180 / Math.PI);
+
+      // Veritabanındaki verileri sırayla döngüye sok (250 kareye tamamla)
+      const dbItem = dbPhotos.length > 0 ? dbPhotos[i % dbPhotos.length] : null;
 
       photosArray.push({
-        ...randomBase,
         uniqueId: `sphere-item-${i}`,
+        Title: dbItem ? dbItem.Title : "Yükleniyor...",
+        Description: dbItem ? dbItem.Description : "HSD BEUN Etkinlikleri",
+        ImagePath: dbItem ? dbItem.ImagePath : "",
+        color: colors[i % colors.length], // DB'de renk yoksa rastgele ver
         lat,
         lon,
       });
     }
     return photosArray;
-  }, []);
+  }, [isMounted, dbPhotos]);
 
   const onDrag = (e: any, info: any) => {
     rotateY.set(rotateY.get() + info.delta.x * 0.15); 
     rotateX.set(rotateX.get() - info.delta.y * 0.15); 
   };
 
+  // Hydration hatasını önlemek için mount olana kadar hiçbir şey gösterme
+  if (!isMounted) return <div className="min-h-screen bg-[#050505]" />;
+
   return (
     <section className="relative w-full h-screen bg-[#050505] overflow-hidden flex flex-col items-center justify-center border-t border-white/5">
       
-      {/* Arka Plan Parlaması */}
       <div className="absolute inset-0 bg-gradient-to-b from-orange-600/5 to-transparent blur-3xl opacity-30 pointer-events-none" />
 
       <div className="absolute top-8 z-50 text-center pointer-events-none">
         <h2 className="text-5xl font-black italic text-white tracking-tighter uppercase mb-2">
           Anılarımız
         </h2>
-        <p className="text-orange-500 font-bold tracking-widest text-sm">250 KARELİK HSD GİRDABI</p>
+        <p className="text-orange-500 font-bold tracking-widest text-sm">{TOTAL_PHOTOS} KARELİK HSD GİRDABI</p>
       </div>
 
-      {/* --- 3D KÜRE SAHNESİ --- */}
       <motion.div 
         ref={containerRef}
         drag
@@ -88,7 +105,6 @@ const GallerySphere = () => {
           }}
         >
           {spherePhotos.map((photo) => (
-            /* DIŞ KAPSAYICI (Yörüngeyi tutar, hareket etmez) */
             <div
               key={photo.uniqueId}
               className="absolute top-1/2 left-1/2" 
@@ -98,23 +114,24 @@ const GallerySphere = () => {
                 backfaceVisibility: "hidden", 
               }}
             >
-             
-              {/* İÇ KART: Dairesel Tasarım (Yazısız) */}
               <motion.div
                 className="w-[100px] h-[100px] md:w-[130px] md:h-[130px] rounded-full border border-white/10 overflow-hidden bg-zinc-900 shadow-xl cursor-pointer relative"
                 onClick={() => setSelectedPhoto(photo)}
                 whileHover={{ 
-                    scale: 1.2, // Daire olduğu için biraz daha fazla büyüyebilir
+                    scale: 1.2,
                     borderColor: "rgba(249, 115, 22, 0.8)",
                     boxShadow: "0 0 30px rgba(249, 115, 22, 0.5)",
                 }}
               >
-                {/* Estetik Gradyan */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${photo.color} to-black opacity-60 group-hover:opacity-40 z-10 transition-opacity duration-300`} />
+                {/* DB'den gelen görsel varsa onu göster, yoksa gradyan */}
+                {photo.ImagePath ? (
+                  <img src={photo.ImagePath} alt={photo.Title} className="w-full h-full object-cover z-0" />
+                ) : (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${photo.color} to-black opacity-60 z-10`} />
+                )}
                 
-                {/* İkon / Görsel Placeholder */}
                 <div className="w-full h-full flex items-center justify-center text-4xl select-none relative z-0">
-                  📷
+                  {photo.ImagePath ? "" : "📷"}
                 </div>
               </motion.div>
             </div>
@@ -122,7 +139,6 @@ const GallerySphere = () => {
         </motion.div>
       </motion.div>
 
-      {/* --- FOTOĞRAFA TIKLAYINCA BÜYÜYEN MODAL --- */}
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
@@ -137,13 +153,14 @@ const GallerySphere = () => {
             >
               <button onClick={() => setSelectedPhoto(null)} className="absolute top-4 right-6 text-white/50 hover:text-white text-5xl transition-colors z-20">&times;</button>
               
-              <div className="text-9xl mb-6 z-0">📷</div>
+              <div className="text-9xl mb-6 z-0">
+                {selectedPhoto.ImagePath ? <img src={selectedPhoto.ImagePath} className="w-48 h-48 rounded-2xl object-cover" /> : "📷"}
+              </div>
               
               <div className="text-center z-10 max-w-2xl">
-                <span className="text-orange-500 font-bold text-sm uppercase tracking-widest mb-2 block">HSD BEUN GALERİ</span>
-                <h3 className="text-white font-bold text-4xl mb-4 italic tracking-tight">{selectedPhoto.title}</h3>
-                {/* Açıklama metni eklendi */}
-                <p className="text-gray-400 text-lg leading-relaxed">{selectedPhoto.desc}</p>
+                <span className="text-orange-500 font-bold text-sm uppercase tracking-widest mb-2 block">HSD BEUN ANISI</span>
+                <h3 className="text-white font-bold text-4xl mb-4 italic tracking-tight">{selectedPhoto.Title}</h3>
+                <p className="text-gray-400 text-lg leading-relaxed">{selectedPhoto.Description}</p>
               </div>
             </motion.div>
           </motion.div>
