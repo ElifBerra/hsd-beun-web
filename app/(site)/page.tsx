@@ -36,13 +36,7 @@ export default function Home() {
                Topluluğa Katıl
           </Link>
 
-          {/* BUTON */}
-          <button 
-            onClick={scrollToEvents}
-            className="border border-white/20 hover:border-white text-white px-8 py-4 rounded-full font-bold text-lg transition-all bg-white/5 backdrop-blur-sm"
-          >
-            Etkinlikleri Gör
-          </button>
+          
         </div>
       </section>
 

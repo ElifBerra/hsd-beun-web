@@ -28,7 +28,7 @@ export default function Events() {
         {/* BAŞLIK */}
         <div className="text-center mb-20">
           <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
-              ETKİNLİLERİMİZ 
+              ETKİNLİKLERİMİZ 
             </h2>
           <div className="h-[2px] w-24 bg-orange-600 mx-auto mt-6"></div>
         </div>
