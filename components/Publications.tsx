@@ -32,7 +32,9 @@ const Publications = ({ limit = 3 , showReadMore = true}) => {
     <section className="max-w-6xl w-full px-4 py-24 border-t border-white/5">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-4xl font-bold mb-2 italic">Yayınlarımız</h2>
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+              YAYINLARIMIZ
+         </h2>
           <p className="text-gray-400">Teknik ekibimizden güncel makaleler ve rehberler.</p>
         </div>
         {showReadMore && (

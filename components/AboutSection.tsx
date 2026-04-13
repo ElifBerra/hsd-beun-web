@@ -25,9 +25,9 @@ const AboutSection = () => {
   return (
     <section className="max-w-6xl w-full px-4 py-24 border-t border-white/5">
       <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-600 bg-clip-text text-transparent italic">
-          Hakkımızda
-        </h2>
+        <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+              HAKKIMIZDA 
+            </h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Geleceği kodlayan, inovasyonla büyüyen bir topluluğuz.
         </p>

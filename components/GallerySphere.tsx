@@ -82,9 +82,9 @@ const GallerySphere = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-orange-600/5 to-transparent blur-3xl opacity-30 pointer-events-none" />
 
       <div className="absolute top-8 z-50 text-center pointer-events-none">
-        <h2 className="text-5xl font-black italic text-white tracking-tighter uppercase mb-2">
-          Anılarımız
-        </h2>
+        <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+              ANILARIMIZ 
+         </h2>
         <p className="text-orange-500 font-bold tracking-widest text-sm">{TOTAL_PHOTOS} KARELİK HSD GİRDABI</p>
       </div>
 

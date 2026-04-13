@@ -1,56 +1,93 @@
-// components/Announcements.tsx
+"use client";
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const Announcements = ({ limit = 3, showAllButton = true }) => {
-  const announcementsData = [
-    {
-      id: 1,
-      title: "HSD BEUN Elçilik Görevi Devir Teslimi",
-      date: "Şubat 2026",
-      desc: "Burak Kaymak'tan devraldığımız bayrağı Elif Berra Çelik liderliğinde daha ileriye taşıyoruz.",
-      tag: "Haber"
-    },
-    {
-      id: 2,
-      title: "Sui 102: Akıllı Kontrat Geliştirme",
-      date: "Nisan 2026",
-      desc: "Blockchain dünyasında derinleşiyoruz. Sui 102 eğitimlerimiz başlıyor.",
-      tag: "Eğitim"
-    },
-    {
-      id: 3,
-      title: "Yeni Web Sitemiz Yayında!",
-      date: "Nisan 2026",
-      desc: "BEUN teknoloji ekosistemini dijitale taşıyan modern platformumuz açıldı.",
-      tag: "Duyuru"
-    }
-    // Buraya daha fazla duyuru eklenebilir...
-  ];
+
+interface AnnouncementsProps {
+  limit?: number;
+  showAllButton?: boolean;
+}
+
+
+const Announcements = ({ limit, showAllButton = true }: AnnouncementsProps) => {
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const res = await fetch('/api/admin/announcements', { cache: 'no-store' });
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          let filtered = data.filter((a: any) => a.IsActive !== 0);
+          // EĞER LİMİT VARSA ONU UYGULA
+          if (limit) {
+            filtered = filtered.slice(0, limit);
+          }
+          setAnnouncements(filtered);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnnouncements();
+  }, [limit]);
 
   return (
-    <section className="max-w-6xl w-full px-4 py-24 border-t border-white/5">
-      <div className="flex items-center justify-between mb-12">
-        <h2 className="text-4xl font-bold italic text-white">Duyurular</h2>
-        {showAllButton && (
-          <Link href="/announcements" className="text-orange-500 hover:text-orange-400 text-sm font-medium transition-colors">
-            Tümünü Gör →
-          </Link>
-        )}
-      </div>
-
-      <div className="space-y-6">
-        {announcementsData.slice(0, limit).map((news) => (
-          <div key={news.id} className="group bg-white/5 border border-white/10 p-8 rounded-[32px] hover:bg-white/[0.08] transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex-1">
-              <span className="text-[10px] font-bold text-orange-500 uppercase tracking-[0.2em] mb-2 block">{news.tag}</span>
-              <h3 className="text-xl font-bold text-white group-hover:text-orange-500 transition-colors mb-2">{news.title}</h3>
-              <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">{news.desc}</p>
-            </div>
-            <div className="text-gray-600 text-xs font-mono whitespace-nowrap bg-white/5 px-4 py-2 rounded-full border border-white/5">
-              {news.date}
-            </div>
+    <section className="py-24 bg-black">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <div>
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+              SON <br /> DUYURULAR 
+            </h2>
+            <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-xs mt-6">
+              HSD BEUN dünyasından en sıcak gelişmeler
+            </p>
           </div>
-        ))}
+          <Link href="/announcements" className="group text-orange-500 font-black uppercase tracking-widest text-sm flex items-center gap-2">
+            TÜM ARŞİVİ GÖR <span className="group-hover:translate-x-2 transition-transform">→</span>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {loading ? (
+            // Yüklenme Durumu
+            [1, 2, 3].map((i) => (
+              <div key={i} className="h-64 bg-zinc-900/50 animate-pulse rounded-[2.5rem] border border-white/5"></div>
+            ))
+          ) : announcements.length > 0 ? (
+            announcements.map((item) => (
+              <div key={item.AnnID} className="bg-zinc-900/20 border border-white/5 p-10 rounded-[2.5rem] hover:border-orange-500/30 transition-all group flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-2 h-2 rounded-full bg-orange-600 shadow-[0_0_10px_rgba(234,88,12,0.5)]"></div>
+                  <span className="text-zinc-600 text-xs font-black uppercase tracking-widest italic">
+                    {item.StartDate ? new Date(item.StartDate).toLocaleDateString('tr-TR') : 'YENİ'}
+                  </span>
+                </div>
+                
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-4 group-hover:text-orange-500 transition-colors leading-tight">
+                  {item.Title}
+                </h3>
+                
+                <p className="text-zinc-500 text-sm font-medium leading-relaxed mb-8 line-clamp-3">
+                  {item.Content}
+                </p>
+                
+                <Link href={`/announcements`} className="mt-auto inline-flex text-white font-black text-xs uppercase tracking-[0.2em] border-b-2 border-orange-600 pb-1 w-fit hover:border-white transition-colors">
+                  DETAYLARI GÖR
+                </Link>
+              </div>
+            ))
+          ) : (
+            // Duyuru Yoksa
+            <div className="col-span-1 md:col-span-3 py-20 text-center border-2 border-dashed border-white/5 rounded-[3rem]">
+              <p className="text-zinc-600 font-bold uppercase tracking-widest italic">Yakında yeni duyurular eklenecek...</p>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

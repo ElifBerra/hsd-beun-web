@@ -50,9 +50,9 @@ export default function ContactPreview() {
           {/* Arka Plan Süslemesi */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-          <div className="text-center mb-12 relative z-10">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter italic uppercase leading-none">
-              BİZİMLE <br /> <span className="text-orange-600">İLETİŞİME GEÇ</span>
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+              BİZİMLE <br /> İLETİŞİME GEÇ
             </h2>
             <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] mt-6">
               Fikirlerini ve sorularını bizimle paylaş

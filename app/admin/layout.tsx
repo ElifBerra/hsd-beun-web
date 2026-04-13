@@ -21,12 +21,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/team" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>👥</span> <span className="text-sm font-medium">Ekip</span>
           </Link>
+          <Link href="/admin/sponsors" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
+            <span >🤝</span> <span className="text-sm font-medium">Sponsorlar</span>
+          </Link>
           <Link href="/admin/announcements" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>📢</span> <span className="text-sm font-medium">Duyurular</span>
           </Link>
           <Link href="/admin/messages" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>✉️</span> <span className="text-sm font-medium">Mesajlar</span>
           </Link>
+
         </nav>
 
         <div className="pt-6 border-t border-white/5 mt-auto">
