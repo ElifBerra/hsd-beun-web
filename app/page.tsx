@@ -6,6 +6,8 @@ import TeamPreview from "@/components/TeamPreview";
 import ContactPreview from "@/components/ContactPreview";
 import AboutSection from "@/components/AboutSection";
 import Link from 'next/link';
+import Publications from "@/components/Publications";
+import Sponsors from "@/components/Sponsors";
 
 export default function Home() {
   const scrollToEvents = () => {
@@ -32,7 +34,7 @@ export default function Home() {
               >
                Topluluğa Katıl
           </Link>
-          
+
           {/* BUTON */}
           <button 
             onClick={scrollToEvents}
@@ -45,8 +47,10 @@ export default function Home() {
 
       <AboutSection />
       <Events showAllButton={true}/>
-      <Announcements />
+      <Announcements limit={3} showAllButton={true}/>
+      <Publications limit={3} showReadMore={true} />
       <TeamPreview />
+      <Sponsors />
       <ContactPreview />
 
     </main>

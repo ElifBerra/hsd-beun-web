@@ -1,49 +1,56 @@
+// components/Announcements.tsx
 import Link from 'next/link';
 
-const Announcements = () => {
+const Announcements = ({ limit = 3, showAllButton = true }) => {
+  const announcementsData = [
+    {
+      id: 1,
+      title: "HSD BEUN Elçilik Görevi Devir Teslimi",
+      date: "Şubat 2026",
+      desc: "Burak Kaymak'tan devraldığımız bayrağı Elif Berra Çelik liderliğinde daha ileriye taşıyoruz.",
+      tag: "Haber"
+    },
+    {
+      id: 2,
+      title: "Sui 102: Akıllı Kontrat Geliştirme",
+      date: "Nisan 2026",
+      desc: "Blockchain dünyasında derinleşiyoruz. Sui 102 eğitimlerimiz başlıyor.",
+      tag: "Eğitim"
+    },
+    {
+      id: 3,
+      title: "Yeni Web Sitemiz Yayında!",
+      date: "Nisan 2026",
+      desc: "BEUN teknoloji ekosistemini dijitale taşıyan modern platformumuz açıldı.",
+      tag: "Duyuru"
+    }
+    // Buraya daha fazla duyuru eklenebilir...
+  ];
+
   return (
-    <section className="max-w-6xl w-full px-4 py-20 border-t border-white/5">
+    <section className="max-w-6xl w-full px-4 py-24 border-t border-white/5">
       <div className="flex items-center justify-between mb-12">
-        <h2 className="text-3xl font-bold">Son Duyurular</h2>
-        <Link href="/duyurular" className="text-orange-500 hover:text-orange-400 text-sm font-medium transition-colors">
-          Tüm Duyuruları Gör →
-        </Link>
+        <h2 className="text-4xl font-bold italic text-white">Duyurular</h2>
+        {showAllButton && (
+          <Link href="/announcements" className="text-orange-500 hover:text-orange-400 text-sm font-medium transition-colors">
+            Tümünü Gör →
+          </Link>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        {/* Duyuru Kartı 1 */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row hover:bg-white/[0.07] transition-all cursor-pointer group">
-          <div className="md:w-64 h-48 bg-gradient-to-br from-red-600/20 to-orange-500/20 flex items-center justify-center">
-            <span className="text-4xl group-hover:scale-110 transition-transform duration-300">📢</span>
-          </div>
-          <div className="p-8 flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="px-3 py-1 bg-red-600/20 text-red-500 text-xs font-bold rounded-full uppercase">Etkinlik</span>
-              <span className="text-gray-500 text-xs">12 Nisan 2026</span>
+      <div className="space-y-6">
+        {announcementsData.slice(0, limit).map((news) => (
+          <div key={news.id} className="group bg-white/5 border border-white/10 p-8 rounded-[32px] hover:bg-white/[0.08] transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex-1">
+              <span className="text-[10px] font-bold text-orange-500 uppercase tracking-[0.2em] mb-2 block">{news.tag}</span>
+              <h3 className="text-xl font-bold text-white group-hover:text-orange-500 transition-colors mb-2">{news.title}</h3>
+              <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">{news.desc}</p>
             </div>
-            <h3 className="text-xl font-bold mb-3 group-hover:text-orange-500 transition-colors">Sui 102: Akıllı Kontrat Geliştirme</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Move diline derinlemesine dalış yapıyoruz. Kendi akıllı kontratını yazmaya hazır mısın?
-            </p>
-          </div>
-        </div>
-
-        {/* Duyuru Kartı 2 */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row hover:bg-white/[0.07] transition-all cursor-pointer group">
-          <div className="md:w-64 h-48 bg-gradient-to-br from-blue-600/20 to-purple-500/20 flex items-center justify-center">
-            <span className="text-4xl group-hover:scale-110 transition-transform duration-300">🚀</span>
-          </div>
-          <div className="p-8 flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="px-3 py-1 bg-blue-600/20 text-blue-500 text-xs font-bold rounded-full uppercase">Duyuru</span>
-              <span className="text-gray-500 text-xs">10 Nisan 2026</span>
+            <div className="text-gray-600 text-xs font-mono whitespace-nowrap bg-white/5 px-4 py-2 rounded-full border border-white/5">
+              {news.date}
             </div>
-            <h3 className="text-xl font-bold mb-3 group-hover:text-blue-400 transition-colors">Yeni Dönem Başvuruları</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Ekibimize katılmak ve kampüs elçisi olma yolunda ilk adımı atmak ister misin?
-            </p>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );
