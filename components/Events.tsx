@@ -1,102 +1,64 @@
 "use client";
-
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const Events = ({ showAllButton = true }) => {
-  // ÖNEMLİ: Tarihleri YYYY-MM-DD formatında yazıyoruz ki JS kolayca kıyaslasın
-  const eventsData = [
-    {
-      id: 1,
-      date: "2026-04-25", // Gelecek bir tarih
-      title: "Buildermare x HSD Workshop",
-      desc: "Zonguldak Teknopark'ta ekosistemi büyütecek projeleri konuşuyoruz.",
-      color: "orange"
-    },
-    {
-      id: 2,
-      date: "2026-05-05", // Gelecek bir tarih
-      title: "AI & Cloud Day",
-      desc: "Huawei Cloud servisleri ile yapay zeka modelleri eğitme üzerine bir gün.",
-      color: "blue"
-    },
-    {
-      id: 3,
-      date: "2024-12-10", // Geçmiş bir tarih
-      title: "Sui 101 Giriş",
-      desc: "Blockchain dünyasına ilk adımı attığımız temel eğitim.",
-      color: "gray"
-    }
-  ];
+export default function Events() {
+  const [upcoming, setUpcoming] = useState([]);
 
-  const today = new Date();
-
-  // Etkinlikleri Tarihe Göre Ayırıyoruz
-  const upcomingEvents = eventsData.filter(event => new Date(event.date) >= today);
-  const pastEvents = eventsData.filter(event => new Date(event.date) < today);
-
-  // Tarih Formatlama Yardımcısı (Örn: 25 Nisan)
-  const formatDate = (dateString: string) => {
-    const d = new Date(dateString);
-    const day = d.getDate();
-    const month = d.toLocaleString('tr-TR', { month: 'long' });
-    return { day, month };
-  };
+  useEffect(() => {
+    fetch('/api/events')
+      .then(res => res.json())
+      .then(data => {
+        const today = new Date();
+        const filtered = data
+          .filter((event: any) => new Date(event.EventDate) >= today)
+          .slice(0, 3);
+        setUpcoming(filtered);
+      });
+  }, []);
 
   return (
-    <section id="etkinlikler-bolumu" className="max-w-6xl w-full px-4 py-20 border-t border-white/5 scroll-mt-24">
-      
-      {/* GELECEK ETKİNLİKLER */}
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold mb-4 italic text-white">Yaklaşan Etkinlikler</h2>
-        {showAllButton && (
-          <Link href="/events" className="text-orange-500 hover:text-orange-400 text-sm font-medium transition-colors">
-            Tümünü Gör →
+    <section className="py-24 bg-black border-t border-white/5">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="max-w-2xl">
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase">
+              YAKLAŞAN <br /> <span className="text-orange-600">ETKİNLİKLER</span>
+            </h2>
+          </div>
+          <Link href="/events" className="group flex items-center gap-3 text-sm font-black tracking-[0.2em] uppercase hover:text-orange-500 transition-all">
+            TÜMÜNÜ GÖR 
+            <span className="bg-orange-600 p-2 rounded-full text-black group-hover:scale-110 transition-transform">→</span>
           </Link>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-        {upcomingEvents.map((event) => {
-          const { day, month } = formatDate(event.date);
-          return (
-            <div key={event.id} className="group bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/[0.08] transition-all">
-              <div className="flex justify-between items-start mb-6">
-                <div className="bg-orange-500/20 text-orange-500 px-4 py-1 rounded-full text-xs font-bold uppercase">Yakında</div>
-                <div className="text-right">
-                  <span className="block text-2xl font-bold text-white">{day}</span>
-                  <span className="text-xs text-gray-400 uppercase">{month}</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {upcoming.map((event: any) => (
+            <div key={event.EventID} className="bg-zinc-950 border border-white/5 p-4 rounded-[2.5rem] hover:border-orange-500/30 transition-all group">
+              <div className="relative overflow-hidden rounded-[1.8rem] mb-6 aspect-video">
+                <img src={event.CoverImagePath} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-4 py-1 rounded-full border border-white/10">
+                   <span className="text-[10px] font-black tracking-widest text-orange-500 uppercase">
+                     {new Date(event.EventDate).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' })}
+                   </span>
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-2 group-hover:text-orange-500 transition-colors">{event.title}</h3>
-              <p className="text-gray-400 text-sm mb-6">{event.desc}</p>
-              <button className="w-full py-3 rounded-xl border border-white/10 group-hover:bg-white group-hover:text-black transition-all font-medium text-sm">Detaylar</button>
+              <div className="px-2 pb-4">
+                <h3 className="text-2xl font-black tracking-tight uppercase leading-tight group-hover:text-orange-500 transition-colors">
+                  {event.Title}
+                </h3>
+                <p className="text-zinc-500 text-sm mt-4 font-medium line-clamp-2 leading-relaxed italic">
+                  {event.Description}
+                </p>
+              </div>
             </div>
-          );
-        })}
-      </div>
-
-      {/* GEÇMİŞ ETKİNLİKLER (Sadece Events sayfasında veya isteğe bağlı gösterilebilir) */}
-      {!showAllButton && pastEvents.length > 0 && (
-        <div className="mt-32">
-          <h2 className="text-3xl font-bold mb-12 italic text-gray-500">Geçmiş Etkinlikler</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-60">
-            {pastEvents.map((event) => {
-              const { day, month } = formatDate(event.date);
-              return (
-                <div key={event.id} className="bg-white/5 border border-white/5 rounded-2xl p-6 grayscale hover:grayscale-0 transition-all">
-                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-gray-500 text-xs font-bold uppercase">Tamamlandı</span>
-                    <span className="text-sm text-gray-500">{day} {month}</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-300">{event.title}</h3>
-                </div>
-              );
-            })}
-          </div>
+          ))}
         </div>
-      )}
+
+        {upcoming.length === 0 && (
+          <p className="text-zinc-700 font-black italic uppercase tracking-widest text-center py-20">Henüz yeni etkinlik planlanmadı.</p>
+        )}
+      </div>
     </section>
   );
-};
-
-export default Events;
+}

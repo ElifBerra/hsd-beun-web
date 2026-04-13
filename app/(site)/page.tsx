@@ -47,7 +47,7 @@ export default function Home() {
       </section>
 
       <AboutSection />
-      <Events showAllButton={true}/>
+      <Events />
       <Announcements limit={3} showAllButton={true}/>
       <Publications limit={3} showReadMore={true} />
       <TeamPreview />

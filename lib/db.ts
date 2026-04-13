@@ -1,13 +1,18 @@
 import sql from 'mssql';
 
+// TypeScript'e global nesnesi içine 'pool' ekleyeceğimizi haber veriyoruz
+declare global {
+  var pool: sql.ConnectionPool | undefined;
+}
+
 const config = {
-  user: 'sa', 
+  user: 'sa',
   password: 'BeunHsd2026!', // Burayı güncelle!
   server: '127.0.0.1', // Çift ters slash önemli
   database: 'HSDBEUN_DB',
   options: {
-    encrypt: false, 
-    trustServerCertificate: true, 
+    encrypt: false,
+    trustServerCertificate: true,
     instanceName: 'MSSQLSERVER05'
   },
   port: 1433 // Standart port, TCP/IP ayarlarında aksi belirtilmedikçe budur
@@ -17,7 +22,7 @@ export async function connectDB() {
   try {
     // Eğer halihazırda bir bağlantı havuzu varsa onu kullan, yoksa yeni oluştur
     if (global.pool) return global.pool;
-    
+
     const pool = await sql.connect(config);
     global.pool = pool;
     return pool;

@@ -1,35 +1,18 @@
-import Footer from "../components/Footer";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Navbar from "../components/Navbar";
+import './globals.css';
+import { Inter } from 'next/font/google';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ['latin'] });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "HSD BEUN | Huawei Student Developers",
-  description: "Zonguldak Bülent Ecevit Üniversitesi HSD Topluluğu resmi web sitesi.",
+export const metadata = {
+  title: 'HSD BEUN',
+  description: 'Huawei Student Developers Zonguldak Bülent Ecevit Üniversitesi',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr">
-      <body className="antialiased bg-black text-white">
-        <Navbar />
-        {children} {/* Sadece BİR TANE olmalı */}
-        <Footer />
+    <html lang="tr" className="scroll-smooth">
+      <body className={inter.className}>
+        {children}
       </body>
     </html>
   );
