@@ -70,7 +70,7 @@ export default function ContactPreview() {
                   onChange={handleChange}
                   required
                   className="w-full bg-zinc-900 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-colors"
-                  placeholder="Elif Turuncu"
+                  placeholder="Elif Berra Çelik"
                 />
               </div>
               <div>

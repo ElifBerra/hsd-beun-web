@@ -15,6 +15,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>🏠</span> <span className="text-sm font-medium">Dashboard</span>
           </Link>
+          <Link href="/admin/about" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
+            <span>🧡</span> <span className="text-sm font-medium">Hakkımızda</span>
+          </Link>
           <Link href="/admin/events" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>🎡</span> <span className="text-sm font-medium">Etkinlikler</span>
           </Link>
@@ -26,6 +29,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
           <Link href="/admin/announcements" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>📢</span> <span className="text-sm font-medium">Duyurular</span>
+          </Link>
+          <Link href="/admin/publications" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
+            <span>📝</span> <span className="text-sm font-medium">Yayınlar</span>
           </Link>
           <Link href="/admin/gallery" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>📷</span> <span className="text-sm font-medium">Anılar</span>

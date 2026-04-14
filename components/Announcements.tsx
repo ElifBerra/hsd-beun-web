@@ -60,8 +60,8 @@ export default function Announcements({ limit, showAllButton = true }: Announcem
               <div key={i} className="w-full md:w-[400px] h-72 bg-zinc-950/30 animate-pulse rounded-[3rem] border border-white/5"></div>
             ))
           ) : (
-            announcements.map((ann) => (
-              <div key={ann.AnnouncementID} className="bg-zinc-950/40 border border-white/5 p-10 rounded-[3rem] hover:border-orange-500/30 transition-all duration-500 group w-full md:w-[420px] min-h-[350px] flex flex-col relative overflow-hidden">
+            announcements.map((ann,index) => (
+              <div key={ann.AnnID || index} className="bg-zinc-950/40 border border-white/5 p-10 rounded-[3rem] hover:border-orange-500/30 transition-all duration-500 group w-full md:w-[420px] min-h-[350px] flex flex-col relative overflow-hidden">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-2 h-2 rounded-full bg-orange-600 animate-pulse"></div>
                   <span className="text-zinc-500 font-black text-[10px] tracking-widest uppercase">{formatDate(ann)}</span>

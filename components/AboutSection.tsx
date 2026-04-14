@@ -1,33 +1,63 @@
+"use client";
+import React, { useState, useEffect } from 'react';
+
 const AboutSection = () => {
+  const [sections, setSections] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        const res = await fetch('/api/admin/about', { cache: 'no-store' });
+        const data = await res.json();
+        setSections(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Hakkımızda verisi çekilemedi:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAboutData();
+  }, []);
+
+  // Yardımcı fonksiyon: Veritabanındaki SectionKey'e göre doğru metni bulur
+  const getSectionData = (key: string, defaultTitle: string, defaultDesc: string) => {
+    const section = sections.find(s => s.SectionKey === key);
+    return {
+      title: section?.Title || defaultTitle,
+      desc: section?.BodyText || defaultDesc
+    };
+  };
+
+  // Kart yapılarını koruyoruz, sadece içerikleri fonksiyondan çekiyoruz
   const aboutCards = [
     {
-      title: "Biz Kimiz?",
+      ...getSectionData("About", "Biz Kimiz?", "HSD BEUN Topluluğu içeriği yükleniyor..."),
       icon: "</>",
-      desc: "HSD BEUN Topluluğu, Huawei tarafından desteklenen küresel bir üniversite topluluğu programının Zonguldak Bülent Ecevit Üniversitesi'ndeki yerel koludur."
     },
     {
-      title: "Misyonumuz",
+      ...getSectionData("Mission", "Misyonumuz", "Misyon içeriği yükleniyor..."),
       icon: "🎯",
-      desc: "Öğrencilere güncel teknolojiler konusunda uygulamalı deneyim kazandırmak ve geleceğin teknoloji liderlerini yetiştirmek."
     },
     {
-      title: "Vizyonumuz",
+      ...getSectionData("Vision", "Vizyonumuz", "Vizyon içeriği yükleniyor..."),
       icon: "👁️",
-      desc: "Huawei ekosistemi ve global teknoloji trendleriyle iç içe geçerek dünya genelinde rekabet edebilen yetkin bireyler yetiştirmek."
     },
     {
-      title: "Değerlerimiz",
+      ...getSectionData("Values", "Değerlerimiz", "Değerlerimiz içeriği yükleniyor..."),
       icon: "💎",
-      desc: "Sürekli öğrenme, topluluk odaklılık ve inovasyon. Her üyemize kariyer fırsatları ve teknik derinlik katıyoruz."
     }
   ];
+
+  if (loading && sections.length === 0) return null;
 
   return (
     <section className="max-w-6xl w-full px-4 py-24 border-t border-white/5">
       <div className="text-center mb-16">
         <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
-              HAKKIMIZDA 
-            </h2>
+          HAKKIMIZDA 
+        </h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Geleceği kodlayan, inovasyonla büyüyen bir topluluğuz.
         </p>
