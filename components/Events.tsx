@@ -26,13 +26,23 @@ export default function Events() {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
         {/* BAŞLIK */}
-        <div className="text-center mb-20">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
-              ETKİNLİKLERİMİZ 
+        <div className="flex flex-col items-center justify-center text-center mb-20">
+            <h2 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-none mb-4 bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+             ETKİNLİKLERİMİZ
             </h2>
-          <div className="h-[2px] w-24 bg-orange-600 mx-auto mt-6"></div>
+            
+            <p className="text-zinc-500 font-bold uppercase tracking-[0.4em] text-[10px] mb-8">
+              BİRBİRİNDEN KEYİFLİ AKTİVİTELER VE EĞİTİMLER
+            </p>
+
+            <Link href="/events" className="group flex items-center gap-3 text-orange-500  font-black tracking-[0.2em] uppercase hover:text-orange-700 transition-all mb-10">
+              TÜM ETKİNLİKLERİ GÖR <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </Link>
+
+            <div className="h-[2px] w-24 bg-orange-600 opacity-50"></div>
         </div>
         
+
         {/* KARTLAR */}
         <div className="flex flex-wrap justify-center gap-8">
           {loading ? (
@@ -72,6 +82,7 @@ export default function Events() {
             ))
           )}
         </div>
+        
       </div>
 
       {/* DETAY MODALI (POPUP) - ÖRNEĞE GÖRE GÜNCELLENDİ */}
