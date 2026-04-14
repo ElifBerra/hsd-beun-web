@@ -1,40 +1,53 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-export default function Publications() {
-  const posts = [
+// Sadece TypeScript'i susturmak için gerekli olan tip tanımı
+interface PublicationsProps {
+  limit?: number;
+  showReadMore?: boolean;
+}
+
+export default function Publications({ limit, showReadMore = true }: PublicationsProps) {
+  const pathname = usePathname();
+  const isArchivePage = pathname === '/publications';
+
+  const allPosts = [
     { id: 1, category: 'SOFTWARE DESIGN', title: 'Yazılım Tasarım Desenleri: Singleton ve Loose Coupling', desc: 'Unity projelerinde neden Singleton’dan kaçmalıyız? Loose Coupling mimarisi üzerine bir inceleme.', date: '12 Mart 2026' },
     { id: 2, category: 'AI & NEURAL NETWORKS', title: 'Neural Networks 101: Sinir Ağlarına Giriş', desc: 'Yapay zekanın kalbi olan sinir ağları nasıl çalışır? Temel matematiksel modelleme.', date: '05 Nisan 2026' },
     { id: 3, category: 'GAME DEV', title: 'ScriptableObjects ile Event-Driven Architecture', desc: 'Unity’de modüler kod yazmanın en temiz yolu: ScriptableObjects ve Event sistemleri.', date: '20 Şubat 2026' }
   ];
 
+  // Limit varsa uygula, yoksa orijinal listeyi kullan
+  const posts = limit ? allPosts.slice(0, limit) : allPosts;
+
   return (
     <section id="publications" className="py-24 md:py-32 bg-black overflow-hidden relative border-t border-white/5">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
-        {/* BAŞLIK BÖLÜMÜ - TAM ORTALI */}
-        <div className="flex flex-col items-center justify-center text-center mb-20">
-          <h2 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-none mb-4 bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
-            YAYINLARIMIZ
-          </h2>
+        {/* BAŞLIK BÖLÜMÜ - Tasarımın tamamen orijinal (br ve div dahil) */}
+        {!isArchivePage && showReadMore && (
+          <div className="flex flex-col items-center justify-center text-center mb-20">
+            <h2 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-none mb-4 bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+              YAYINLARIMIZ
+            </h2>
 
-          <p className="text-zinc-500 font-bold uppercase tracking-[0.4em] text-[10px]">
-            TEKNOLOJİK BİRİKİMİMİZİ PAYLAŞIYORUZ
-          </p>
+            <p className="text-zinc-500 font-bold uppercase tracking-[0.4em] text-[10px]">
+              TEKNOLOJİK BİRİKİMİMİZİ PAYLAŞIYORUZ
+            </p>
 
             <br/>
-            <Link href="https://medium.com/@hsdzbeun" target="_blank" className="group flex items-center gap-3 text-orange-500  font-black tracking-[0.2em] uppercase hover:text-orange-700 transition-all mb-10">
+            <Link href="/publications" className="group flex items-center gap-3 text-orange-500 font-black tracking-[0.2em] uppercase hover:text-orange-700 transition-all mb-10">
                 TÜM YAYINLARI GÖR 
-                <span className="group-hover:translate-x-2 transition-transformgroup-hover:translate-x-2 transition-transform">→</span>
+                <span className="group-hover:translate-x-2 transition-transform">→</span>
             </Link>
-        
+          
             <div className="h-[2px] w-24 bg-orange-600 opacity-50"></div>
-    </div>
+          </div>
+        )}
 
-        
-
-        {/* YAYIN KARTLARI */}
+        {/* YAYIN KARTLARI - Senin orijinal CSS sınıfların */}
         <div className="flex flex-wrap justify-center gap-8">
           {posts.map((post) => (
             <div key={post.id} className="bg-black/50 border border-white/5 p-10 rounded-[3rem] hover:border-orange-500/30 transition-all group w-full md:w-[calc(33.333%-2rem)] max-w-[400px]">
@@ -48,8 +61,6 @@ export default function Publications() {
             </div>
           ))}
         </div>
-
-        
       </div>
     </section>
   );
