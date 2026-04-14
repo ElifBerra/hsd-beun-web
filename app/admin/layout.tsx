@@ -27,6 +27,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/announcements" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>📢</span> <span className="text-sm font-medium">Duyurular</span>
           </Link>
+          <Link href="/admin/gallery" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
+            <span>📷</span> <span className="text-sm font-medium">Anılar</span>
+          </Link>
           <Link href="/admin/messages" className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/10 hover:text-orange-500 transition-all">
             <span>✉️</span> <span className="text-sm font-medium">Mesajlar</span>
           </Link>

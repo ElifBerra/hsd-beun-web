@@ -5,8 +5,8 @@ import { useState, useRef, useMemo, useEffect } from "react";
 
 const GallerySphere = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<null | any>(null);
-  const [isMounted, setIsMounted] = useState(false); // Hydration hatası için
-  const [dbPhotos, setDbPhotos] = useState<any[]>([]); // DB'den gelen veriler
+  const [isMounted, setIsMounted] = useState(false);
+  const [galleryPhotos, setGalleryPhotos] = useState<any[]>([]); 
   
   const containerRef = useRef<HTMLDivElement>(null);
   const rotateX = useMotionValue(0);
@@ -15,25 +15,32 @@ const GallerySphere = () => {
   const smoothX = useSpring(rotateX, { stiffness: 60, damping: 20 });
   const smoothY = useSpring(rotateY, { stiffness: 60, damping: 20 });
 
-  const TOTAL_PHOTOS = 250; // İstediğin 250 kare
+  const TOTAL_PHOTOS = 250; 
   const SPHERE_RADIUS = 600;
 
-  // 1. Veritabanından Verileri Çek ve Hydration Korumasını Aç
+  // Sadece API yolunu senin istediğin "gallery" API'sine çevirdik
   useEffect(() => {
     setIsMounted(true);
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('/api/events');
-        const data = await response.json();
-        setDbPhotos(data);
-      } catch (error) {
-        console.error("Veri çekme hatası:", error);
+    const fetchGallery = async () => {
+  try {
+    const response = await fetch('/api/admin/gallery', { 
+      cache: 'no-store', // Önbelleği devre dışı bırakır
+      headers: {
+        'Content-Type': 'application/json',
       }
-    };
-    fetchEvents();
+    });
+    
+    if (!response.ok) throw new Error('API yanıt vermiyor');
+
+    const data = await response.json();
+    setGalleryPhotos(data);
+  } catch (error) {
+    console.error("Hata:", error);
+  }
+};
+    fetchGallery();
   }, []);
 
-  // 2. Küre Hesaplama (Sadece istemci tarafında ve veriler gelince)
   const spherePhotos = useMemo(() => {
     if (!isMounted) return [];
 
@@ -41,7 +48,6 @@ const GallerySphere = () => {
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
     const goldenAngle = (2 - goldenRatio) * 360; 
 
-    // DB'den veri gelmediyse boş kalmasın diye fallback (yedek) renkler
     const colors = ["from-orange-500", "from-blue-500", "from-red-600", "from-green-500", "from-purple-600"];
 
     for (let i = 0; i < TOTAL_PHOTOS; i++) {
@@ -52,28 +58,26 @@ const GallerySphere = () => {
       const lon = theta % 360;
       const lat = Math.asin(y) * (180 / Math.PI);
 
-      // Veritabanındaki verileri sırayla döngüye sok (250 kareye tamamla)
-      const dbItem = dbPhotos.length > 0 ? dbPhotos[i % dbPhotos.length] : null;
+      const dbItem = galleryPhotos.length > 0 ? galleryPhotos[i % galleryPhotos.length] : null;
 
       photosArray.push({
         uniqueId: `sphere-item-${i}`,
         Title: dbItem ? dbItem.Title : "Yükleniyor...",
-        Description: dbItem ? dbItem.Description : "HSD BEUN Etkinlikleri",
+        Description: dbItem ? dbItem.Description : "HSD BEUN Anıları",
         ImagePath: dbItem ? dbItem.ImagePath : "",
-        color: colors[i % colors.length], // DB'de renk yoksa rastgele ver
+        color: colors[i % colors.length],
         lat,
         lon,
       });
     }
     return photosArray;
-  }, [isMounted, dbPhotos]);
+  }, [isMounted, galleryPhotos]);
 
   const onDrag = (e: any, info: any) => {
     rotateY.set(rotateY.get() + info.delta.x * 0.15); 
     rotateX.set(rotateX.get() - info.delta.y * 0.15); 
   };
 
-  // Hydration hatasını önlemek için mount olana kadar hiçbir şey gösterme
   if (!isMounted) return <div className="min-h-screen bg-[#050505]" />;
 
   return (
@@ -83,7 +87,7 @@ const GallerySphere = () => {
 
       <div className="absolute top-8 z-50 text-center pointer-events-none">
         <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
-              ANILARIMIZ 
+            ANILARIMIZ 
          </h2>
         <p className="text-orange-500 font-bold tracking-widest text-sm">{TOTAL_PHOTOS} KARELİK HSD GİRDABI</p>
       </div>
@@ -123,7 +127,6 @@ const GallerySphere = () => {
                     boxShadow: "0 0 30px rgba(249, 115, 22, 0.5)",
                 }}
               >
-                {/* DB'den gelen görsel varsa onu göster, yoksa gradyan */}
                 {photo.ImagePath ? (
                   <img src={photo.ImagePath} alt={photo.Title} className="w-full h-full object-cover z-0" />
                 ) : (
