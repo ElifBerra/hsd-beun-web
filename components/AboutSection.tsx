@@ -55,7 +55,7 @@ const AboutSection = () => {
   return (
     <section className="max-w-6xl w-full px-4 py-24 border-t border-white/5">
       <div className="text-center mb-16">
-        <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none italic uppercase bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
+        <h2 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-none mb-4 bg-gradient-to-r from-red-600 via-orange-500 to-orange-400 bg-clip-text text-transparent pr-4">
           HAKKIMIZDA 
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
