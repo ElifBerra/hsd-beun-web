@@ -7,8 +7,8 @@ export const metadata = {
   title: "HSD BEUN | Huawei Student Developers",
   description: "Zonguldak Bülent Ecevit Üniversitesi Huawei Student Developers Topluluğu resmi web sitesi. Geleceği birlikte kodluyoruz!",
   icons: {
-    icon: "/favicon.ico", 
-  },
+  icon: "/favicon.ico",
+},
   openGraph: {
     title: "HSD BEUN | Geleceği Kodluyoruz",
     description: "BEUN Huawei Student Developers topluluğuna katıl, etkinliklerden haberdar ol!",
