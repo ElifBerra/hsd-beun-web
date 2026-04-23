@@ -3,21 +3,26 @@ import pool from '@/lib/db';
 
 export async function GET() {
   try {
-    // PostgreSQL'de pool.query doğrudan kullanılır, recordset yerine rows döner
     const result = await pool.query('SELECT * FROM "Committees" ORDER BY "OrderIndex" ASC');
-    return NextResponse.json(result.rows || []);
+    return NextResponse.json(result.rows);
   } catch (error: any) {
-    console.error("GET Hatası:", error);
-    return NextResponse.json([], { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const { CommitteeName } = await request.json();
-    await pool.query('INSERT INTO committees (committeename) VALUES ($1)', [CommitteeName]);
-    return NextResponse.json({ message: "Komite eklendi" });
+    const { CommitteeName } = await request.json(); // Frontend'den gelen veri
+
+    // Tablo ve sütun isimlerini ÇİFT TIRNAK içine alıyoruz
+    const result = await pool.query(
+      'INSERT INTO "Committees" ("CommitteeName") VALUES ($1) RETURNING *',
+      [CommitteeName]
+    );
+
+    return NextResponse.json({ message: "Komite başarıyla eklendi", data: result.rows[0] });
   } catch (error: any) {
+    console.error("Komite Ekleme Hatası:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
