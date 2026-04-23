@@ -15,8 +15,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const { CommitteeName } = await request.json();
-    // @name yerine $1 kullanıyoruz
-    await pool.query('INSERT INTO "Committees" ("CommitteeName") VALUES ($1)', [CommitteeName]);
+    await pool.query('INSERT INTO committees (committeename) VALUES ($1)', [CommitteeName]);
     return NextResponse.json({ message: "Komite eklendi" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
