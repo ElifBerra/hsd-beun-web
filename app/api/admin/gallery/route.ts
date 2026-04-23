@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/db"; // connectDB fonksiyonunu çağırıyoruz
+import pool from "@/lib/db"; // Yeni PostgreSQL pool yapımız
 
 export async function GET() {
   try {
-    const pool = await connectDB(); // Önce bağlantıyı kuruyoruz
-    const result = await pool.request().query("SELECT * FROM GalleryImages ORDER BY CreatedAt DESC");
+    // result.recordset -> result.rows
+    const result = await pool.query('SELECT * FROM "GalleryImages" ORDER BY "CreatedAt" DESC');
     
-    return NextResponse.json(result.recordset);
+    return NextResponse.json(result.rows || []);
   } catch (error) {
-    console.error("Gallery GET hatası:", error);
+    console.error("PostgreSQL Gallery GET hatası:", error);
     return NextResponse.json({ error: "Veri çekilemedi" }, { status: 500 });
   }
 }
@@ -16,17 +16,18 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const { title, imagePath } = await request.json();
-    const pool = await connectDB(); // Bağlantıyı kuruyoruz
 
-    // MSSQL'de parametreli sorgu (SQL Injection koruması için en güvenlisi)
-    await pool.request()
-      .input('title', title)
-      .input('imagePath', imagePath)
-      .query("INSERT INTO GalleryImages (Title, ImagePath, CreatedAt) VALUES (@title, @imagePath, GETDATE())");
+    const query = `
+      INSERT INTO "GalleryImages" ("Title", "ImagePath", "CreatedAt") 
+      VALUES ($1, $2, CURRENT_TIMESTAMP)
+    `;
+
+    // Parametreleri $1 ve $2 olarak güvenli bir şekilde gönderiyoruz
+    await pool.query(query, [title, imagePath]);
 
     return NextResponse.json({ message: "Anı başarıyla eklendi" });
   } catch (error) {
-    console.error("Gallery POST hatası:", error);
+    console.error("PostgreSQL Gallery POST hatası:", error);
     return NextResponse.json({ error: "Yükleme başarısız" }, { status: 500 });
   }
 }

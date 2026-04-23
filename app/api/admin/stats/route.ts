@@ -1,22 +1,24 @@
-// app/api/admin/stats/route.ts
 import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db';
+import pool from '@/lib/db'; 
 
 export async function GET() {
   try {
-    const pool = await connectDB();
-    
-    // Tablo adını [ContactMessages] olarak güncelledik
-    const stats = await pool.request().query(`
+    const query = `
       SELECT 
-        (SELECT COUNT(*) FROM [Events]) as eventCount,
-        (SELECT COUNT(*) FROM [EventParticipants]) as participantCount,
-        (SELECT COUNT(*) FROM [ContactMessages]) as messageCount
-    `);
+        (SELECT COUNT(*) FROM "Events")::int as "eventCount",
+        (SELECT COUNT(*) FROM "EventParticipants")::int as "participantCount",
+        (SELECT COUNT(*) FROM "ContactMessages")::int as "messageCount"
+    `;
 
-    return NextResponse.json(stats.recordset[0]);
+    const result = await pool.query(query);
+
+    return NextResponse.json(result.rows[0] || {
+      eventCount: 0,
+      participantCount: 0,
+      messageCount: 0
+    });
   } catch (err: any) {
-    console.error("SQL HATASI:", err.message);
+    console.error("PostgreSQL Stats Hatası:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

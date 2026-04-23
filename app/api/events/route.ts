@@ -1,14 +1,13 @@
-// app/api/events/route.ts
 import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db';
+import pool from '@/lib/db';
 
 // 1. TÜM ETKİNLİKLERİ GETİR
 export async function GET() {
   try {
-    const pool = await connectDB();
-    const result = await pool.request().query('SELECT * FROM Events ORDER BY EventDate DESC');
-    return NextResponse.json(result.recordset);
+    const result = await pool.query('SELECT * FROM "Events" ORDER BY "EventDate" DESC');
+    return NextResponse.json(result.rows);
   } catch (err: any) {
+    console.error("PostgreSQL GET Hatası:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -19,25 +18,26 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { Title, Description, EventDate, Location, CoverImagePath, CategoryID, OrganizerID } = body;
     
-    const pool = await connectDB();
-    
-    // Tip tanımlamalarını kaldırıp doğrudan değerleri eşliyoruz
-    await pool.request()
-      .input('Title', Title)
-      .input('Description', Description)
-      .input('EventDate', new Date(EventDate))
-      .input('Location', Location)
-      .input('CoverImagePath', CoverImagePath || '/gallery/default.jpg')
-      .input('CategoryID', CategoryID || 1)
-      .input('OrganizerID', OrganizerID || 1)
-      .query(`
-        INSERT INTO Events (Title, Description, EventDate, Location, CoverImagePath, CategoryID, OrganizerID) 
-        VALUES (@Title, @Description, @EventDate, @Location, @CoverImagePath, @CategoryID, @OrganizerID)
-      `);
+    const query = `
+      INSERT INTO "Events" ("Title", "Description", "EventDate", "Location", "CoverImagePath", "CategoryID", "OrganizerID") 
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `;
+
+    const values = [
+      Title,
+      Description,
+      new Date(EventDate), // PostgreSQL Date nesnesini tanır
+      Location,
+      CoverImagePath || '/gallery/default.jpg',
+      CategoryID || 1,
+      OrganizerID || 1
+    ];
+
+    await pool.query(query, values);
 
     return NextResponse.json({ message: 'Etkinlik başarıyla eklendi! 🚀' }, { status: 201 });
   } catch (err: any) {
-    console.error("POST HATASI:", err.message);
+    console.error("PostgreSQL POST HATASI:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -47,10 +47,12 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const pool = await connectDB();
-    await pool.request().input('id', id).query('DELETE FROM Events WHERE EventID = @id');
+    
+    await pool.query('DELETE FROM "Events" WHERE "EventID" = $1', [id]);
+    
     return NextResponse.json({ message: 'Etkinlik silindi' });
   } catch (err: any) {
+    console.error("PostgreSQL DELETE Hatası:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

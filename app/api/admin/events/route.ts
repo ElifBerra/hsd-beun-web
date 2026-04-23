@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db';
+import pool from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const pool = await connectDB();
-    const result = await pool.request().query('SELECT * FROM Events ORDER BY EventDate DESC');
-    return NextResponse.json(result.recordset);
+    // result.recordset yerine result.rows kullanıyoruz
+    const result = await pool.query('SELECT * FROM "Events" ORDER BY "EventDate" DESC');
+    return NextResponse.json(result.rows);
   } catch (err: any) {
+    console.error("PostgreSQL GET Hatası:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -16,23 +17,26 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    // BURAYA RegistrationLink EKLEDİK:
     const { Title, Description, EventDate, Location, CoverImagePath, RegistrationLink } = body;
     
-    const pool = await connectDB();
-    await pool.request()
-      .input('Title', Title)
-      .input('Description', Description)
-      .input('EventDate', EventDate)
-      .input('Location', Location)
-      .input('CoverImagePath', CoverImagePath)
-      .input('RegistrationLink', RegistrationLink || null)
-      .query(`
-        INSERT INTO Events (Title, Description, EventDate, Location, CoverImagePath, RegistrationLink)
-        VALUES (@Title, @Description, @EventDate, @Location, @CoverImagePath, @RegistrationLink)
-      `);
+    const query = `
+      INSERT INTO "Events" ("Title", "Description", "EventDate", "Location", "CoverImagePath", "RegistrationLink")
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `;
+
+    const values = [
+      Title,
+      Description,
+      new Date(EventDate), // PostgreSQL tarih formatı için Date objesi
+      Location,
+      CoverImagePath,
+      RegistrationLink || null
+    ];
+
+    await pool.query(query, values);
     return NextResponse.json({ message: 'Etkinlik oluşturuldu!' });
   } catch (err: any) {
+    console.error("PostgreSQL POST Hatası:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -40,26 +44,29 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    // BURAYA DA RegistrationLink EKLEDİK:
     const { EventID, Title, Description, EventDate, Location, CoverImagePath, RegistrationLink } = body;
     
-    const pool = await connectDB();
-    await pool.request()
-      .input('EventID', EventID)
-      .input('Title', Title)
-      .input('Description', Description)
-      .input('EventDate', EventDate)
-      .input('Location', Location)
-      .input('CoverImagePath', CoverImagePath)
-      .input('RegistrationLink', RegistrationLink || null)
-      .query(`
-        UPDATE Events 
-        SET Title=@Title, Description=@Description, EventDate=@EventDate, 
-            Location=@Location, CoverImagePath=@CoverImagePath, RegistrationLink=@RegistrationLink
-        WHERE EventID=@EventID
-      `);
+    const query = `
+      UPDATE "Events" 
+      SET "Title"=$1, "Description"=$2, "EventDate"=$3, 
+          "Location"=$4, "CoverImagePath"=$5, "RegistrationLink"=$6
+      WHERE "EventID"=$7
+    `;
+
+    const values = [
+      Title,
+      Description,
+      new Date(EventDate),
+      Location,
+      CoverImagePath,
+      RegistrationLink || null,
+      EventID
+    ];
+
+    await pool.query(query, values);
     return NextResponse.json({ message: 'Güncellendi!' });
   } catch (err: any) {
+    console.error("PostgreSQL PUT Hatası:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -68,10 +75,11 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const pool = await connectDB();
-    await pool.request().input('id', id).query('DELETE FROM Events WHERE EventID = @id');
+
+    await pool.query('DELETE FROM "Events" WHERE "EventID" = $1', [id]);
     return NextResponse.json({ message: 'Silindi' });
   } catch (err: any) {
+    console.error("PostgreSQL DELETE Hatası:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

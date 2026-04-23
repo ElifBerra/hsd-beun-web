@@ -1,33 +1,17 @@
-import sql from 'mssql';
+import { Pool } from 'pg';
 
-// TypeScript'e global nesnesi içine 'pool' ekleyeceğimizi haber veriyoruz
+// Global nesnesi içine pool ekleyerek gereksiz bağlantı açılmasını önlüyoruz
 declare global {
-  var pool: sql.ConnectionPool | undefined;
+  var pgPool: Pool | undefined;
 }
 
-const config = {
-  user: 'sa',
-  password: 'BeunHsd2026!', // Burayı güncelle!
-  server: '127.0.0.1', // Çift ters slash önemli
-  database: 'HSDBEUN_DB',
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-    instanceName: 'MSSQLSERVER05'
-  },
-  port: 1433 // Standart port, TCP/IP ayarlarında aksi belirtilmedikçe budur
-};
-
-export async function connectDB() {
-  try {
-    // Eğer halihazırda bir bağlantı havuzu varsa onu kullan, yoksa yeni oluştur
-    if (global.pool) return global.pool;
-
-    const pool = await sql.connect(config);
-    global.pool = pool;
-    return pool;
-  } catch (err) {
-    console.error('MSSQL Bağlantı Hatası: ', err);
-    throw err;
+const pool = global.pgPool || new Pool({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: {
+    rejectUnauthorized: false // Supabase bağlantısı için bu güvenlik ayarı şarttır
   }
-}
+});
+
+if (process.env.NODE_ENV !== 'production') global.pgPool = pool;
+
+export default pool;

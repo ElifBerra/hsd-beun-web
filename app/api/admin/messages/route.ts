@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db';
-
+import pool from '@/lib/db'; // Yeni PostgreSQL bağlantımız
 
 export async function GET() {
   try {
-    const pool = await connectDB();
-    // Sıralamayı SentAt sütununa göre yapıyoruz
-    const result = await pool.request().query('SELECT * FROM ContactMessages ORDER BY SentAt DESC');
-    return NextResponse.json(result.recordset);
+    // result.recordset yerine result.rows kullanıyoruz
+    // Tablo ve sütun isimlerini çift tırnak içinde belirttik
+    const result = await pool.query('SELECT * FROM "ContactMessages" ORDER BY "SentAt" DESC');
+    return NextResponse.json(result.rows);
   } catch (err: any) {
-    console.error("MESAJ ÇEKME HATASI:", err.message);
+    console.error("PostgreSQL MESAJ ÇEKME HATASI:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -21,16 +20,12 @@ export async function DELETE(request: Request) {
 
     if (!id) return NextResponse.json({ error: 'ID gerekli' }, { status: 400 });
 
-    const pool = await connectDB();
-    
-    // id'yi sayıya çeviriyoruz (Number) ve doğrudan gönderiyoruz
-    await pool.request()
-      .input('id', Number(id)) 
-      .query('DELETE FROM ContactMessages WHERE MessageID = @id');
+    // pool.request().input() yerine pool.query(sorgu, [parametreler]) yapısı
+    await pool.query('DELETE FROM "ContactMessages" WHERE "MessageID" = $1', [Number(id)]);
 
     return NextResponse.json({ message: 'Mesaj silindi' });
   } catch (err: any) {
-    console.error("SİLME HATASI:", err.message);
+    console.error("PostgreSQL SİLME HATASI:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

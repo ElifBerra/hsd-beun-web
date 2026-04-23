@@ -12,7 +12,7 @@ export const metadata = {
   openGraph: {
     title: "HSD BEUN | Geleceği Kodluyoruz",
     description: "BEUN Huawei Student Developers topluluğuna katıl, etkinliklerden haberdar ol!",
-    url: "https://hsd-beun.vercel.app", // Kendi domainini buraya yazarsın
+    url: "https://hsdbeun.vercel.app",
     siteName: "HSD BEUN",
     images: [
       {
