@@ -1,102 +1,153 @@
 "use client";
 import { useState, useEffect } from 'react';
 
-export default function AdminAbout() {
-  const [sections, setSections] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+// Tip tanımlaması (TypeScript hatalarını önlemek için)
+interface Section {
+  SectionKey: string;
+  Title: string;
+  BodyText: string;
+  LastUpdated?: string;
+}
 
-  const fetchSections = async () => {
-    try {
-      const res = await fetch('/api/admin/about');
-      const data = await res.json();
-      
-      // API'den ne gelirse gelsin diziye çevir
-      if (Array.isArray(data)) {
-        setSections(data);
-      } else if (data && typeof data === 'object' && !data.error) {
-        setSections([data]);
-      } else {
-        setSections([]);
-      }
-    } catch (err) {
-      console.error("Yükleme hatası:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function AdminAbout() {
+  const [sections, setSections] = useState<Section[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newSection, setNewSection] = useState<Section>({ SectionKey: '', Title: '', BodyText: '' });
 
   useEffect(() => {
     fetchSections();
   }, []);
 
-  const handleUpdate = async (section: any) => {
+  const fetchSections = async () => {
+    try {
+      const res = await fetch('/api/admin/about');
+      const data = await res.json();
+      setSections(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Veri çekme hatası:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreate = async () => {
+    if (!newSection.SectionKey || !newSection.Title) {
+      alert("Lütfen Key ve Başlık alanlarını doldurun!");
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/about', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSection),
+      });
+      if (res.ok) {
+        alert("Yeni bölüm eklendi! ✨");
+        setNewSection({ SectionKey: '', Title: '', BodyText: '' });
+        fetchSections();
+      }
+    } catch (err) {
+      alert("Ekleme hatası!");
+    }
+  };
+
+  const handleDelete = async (key: string) => {
+    if (!confirm("Bu bölümü silmek istediğine emin misin?")) return;
+    try {
+      const res = await fetch(`/api/admin/about?sectionKey=${key}`, { method: 'DELETE' });
+      if (res.ok) fetchSections();
+    } catch (err) {
+      alert("Silme hatası!");
+    }
+  };
+
+  const handleUpdate = async (section: Section) => {
     try {
       const res = await fetch('/api/admin/about', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(section),
       });
-      if (res.ok) alert("Başarıyla güncellendi! ✨");
-      else alert("Güncelleme başarısız.");
+      if (res.ok) alert("Güncellendi! ✅");
     } catch (err) {
-      alert("Bağlantı hatası!");
+      alert("Güncelleme hatası!");
     }
   };
 
   if (loading) return <div className="p-8 text-orange-600 font-black italic">Yükleniyor...</div>;
 
   return (
-    <div className="p-8 text-white max-w-4xl mx-auto">
-      <h1 className="text-3xl font-black italic mb-8 text-orange-600 uppercase tracking-tighter">
-        İçerik Editörü 📝
-      </h1>
-      
+    <div className="p-8 text-white max-w-4xl mx-auto space-y-12">
+      <h1 className="text-3xl font-black italic text-orange-600 uppercase tracking-tighter">İçerik Editörü 📝</h1>
+
+      {/* YENİ EKLEME FORMU */}
+      <div className="bg-zinc-900/50 p-6 rounded-[2rem] border border-orange-600/30">
+        <h2 className="text-sm font-black mb-4 text-orange-500 uppercase">Yeni Bölüm Ekle ➕</h2>
+        <div className="grid gap-3">
+          <input 
+            placeholder="Bölüm Anahtarı (örn: mission)" 
+            className="bg-black p-3 rounded-xl border border-white/10 text-sm outline-none focus:border-orange-500"
+            value={newSection.SectionKey}
+            onChange={e => setNewSection({...newSection, SectionKey: e.target.value})}
+          />
+          <input 
+            placeholder="Başlık" 
+            className="bg-black p-3 rounded-xl border border-white/10 text-sm outline-none focus:border-orange-500"
+            value={newSection.Title}
+            onChange={e => setNewSection({...newSection, Title: e.target.value})}
+          />
+          <textarea 
+            placeholder="İçerik" 
+            className="bg-black p-3 rounded-xl border border-white/10 h-24 text-sm outline-none focus:border-orange-500 resize-none"
+            value={newSection.BodyText}
+            onChange={e => setNewSection({...newSection, BodyText: e.target.value})}
+          />
+          <button onClick={handleCreate} className="bg-orange-600 text-black font-black py-3 rounded-xl hover:bg-white transition-all text-xs">BÖLÜMÜ KAYDET</button>
+        </div>
+      </div>
+
+      {/* LİSTELEME VE GÜNCELLEME */}
       <div className="grid gap-6">
-        {sections.length > 0 ? sections.map((section: any, index: number) => (
-          <div key={index} className="bg-zinc-900/80 p-6 rounded-[2rem] border border-white/5 shadow-xl transition-all">
-            
-            <div className="flex justify-between items-center mb-4 px-2">
-              <span className="bg-orange-600 text-black text-[9px] font-black px-3 py-0.5 rounded-full uppercase">
-                {section?.SectionKey || 'Bölüm'}
-              </span>
-              <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">
-                {section?.LastUpdated ? new Date(section.LastUpdated).toLocaleDateString('tr-TR') : 'YENİ'}
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              <input 
-                type="text" 
-                className="w-full bg-black/50 border border-white/5 p-3 rounded-xl text-sm font-bold text-white outline-none focus:border-orange-600"
-                value={section?.Title || ''} 
-                onChange={(e) => {
-                  const newSecs = [...sections];
-                  newSecs[index].Title = e.target.value;
-                  setSections(newSecs);
-                }}
-              />
-
-              <textarea 
-                className="w-full bg-black/50 border border-white/5 p-3 rounded-xl h-48 text-xs text-zinc-400 leading-relaxed outline-none focus:border-orange-600 resize-none"
-                value={section?.BodyText || ''} 
-                onChange={(e) => {
-                  const newSecs = [...sections];
-                  newSecs[index].BodyText = e.target.value;
-                  setSections(newSecs);
-                }}
-              />
-            </div>
-
+        {sections.map((section, index) => (
+          <div key={section.SectionKey || index} className="bg-zinc-900 p-6 rounded-[2rem] border border-white/5 relative">
             <button 
-              onClick={() => handleUpdate(section)}
-              className="w-full mt-4 bg-zinc-800 hover:bg-orange-600 text-zinc-400 hover:text-black text-[10px] font-black py-3 rounded-xl transition-all"
+              onClick={() => handleDelete(section.SectionKey)}
+              className="absolute top-6 right-6 text-[10px] text-zinc-600 hover:text-red-500 font-black uppercase transition-all"
             >
-              DEĞİŞİKLİKLERİ UYGULA
+              SİL 🗑️
             </button>
+            <span className="text-[10px] bg-orange-600/20 px-3 py-1 rounded-full text-orange-500 font-bold uppercase tracking-tighter">
+              {section.SectionKey}
+            </span>
+            
+            <div className="mt-4 space-y-3">
+              <input 
+                className="w-full bg-black/50 p-3 rounded-xl border border-white/5 focus:border-orange-500 outline-none font-bold text-sm"
+                value={section.Title} 
+                onChange={e => {
+                  const updated = [...sections];
+                  updated[index].Title = e.target.value;
+                  setSections(updated);
+                }}
+              />
+              <textarea 
+                className="w-full bg-black/50 p-3 rounded-xl border border-white/5 h-40 focus:border-orange-500 outline-none text-xs text-zinc-400 leading-relaxed"
+                value={section.BodyText}
+                onChange={e => {
+                  const updated = [...sections];
+                  updated[index].BodyText = e.target.value;
+                  setSections(updated);
+                }}
+              />
+              <button 
+                onClick={() => handleUpdate(section)} 
+                className="w-full bg-zinc-800 py-3 rounded-xl font-black text-[10px] hover:bg-orange-600 hover:text-black transition-all border border-white/5"
+              >
+                DEĞİŞİKLİKLERİ KAYDET
+              </button>
+            </div>
           </div>
-        )) : (
-          <div className="text-zinc-500 italic">Düzenlenecek veri bulunamadı.</div>
-        )}
+        ))}
       </div>
     </div>
   );
