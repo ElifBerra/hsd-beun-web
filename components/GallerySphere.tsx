@@ -143,32 +143,53 @@ const GallerySphere = () => {
       </motion.div>
 
       <AnimatePresence>
-        {selectedPhoto && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-6 md:p-12 cursor-zoom-out"
-            onClick={() => setSelectedPhoto(null)} 
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.8, opacity: 0, y: 20 }}
-              className="relative max-w-5xl w-full aspect-[16/9] bg-zinc-900 border border-white/10 p-6 rounded-[32px] shadow-2xl cursor-default flex flex-col items-center justify-center overflow-hidden"
-              onClick={(e) => e.stopPropagation()} 
-            >
-              <button onClick={() => setSelectedPhoto(null)} className="absolute top-4 right-6 text-white/50 hover:text-white text-5xl transition-colors z-20">&times;</button>
-              
-              <div className="text-9xl mb-6 z-0">
-                {selectedPhoto.ImagePath ? <img src={selectedPhoto.ImagePath} className="w-48 h-48 rounded-2xl object-cover" /> : "📷"}
-              </div>
-              
-              <div className="text-center z-10 max-w-2xl">
-                <span className="text-orange-500 font-bold text-sm uppercase tracking-widest mb-2 block">HSD BEUN ANISI</span>
-                <h3 className="text-white font-bold text-4xl mb-4 italic tracking-tight">{selectedPhoto.Title}</h3>
-                <p className="text-gray-400 text-lg leading-relaxed">{selectedPhoto.Description}</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+  {selectedPhoto && (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 cursor-zoom-out"
+      onClick={() => setSelectedPhoto(null)} 
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+        className="relative max-w-4xl w-full bg-zinc-900/50 border border-white/10 rounded-[2.5rem] shadow-2xl cursor-default flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()} 
+      >
+        {/* Kapatma Butonu */}
+        <button onClick={() => setSelectedPhoto(null)} className="absolute top-6 right-8 text-white/40 hover:text-white text-4xl transition-colors z-30">&times;</button>
+        
+        {/* Resim Alanı - Artık Çok Daha Büyük */}
+        <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden">
+          {selectedPhoto.ImagePath ? (
+            <img 
+              src={selectedPhoto.ImagePath} 
+              className="w-full h-full object-cover" 
+              alt={selectedPhoto.Title}
+            />
+          ) : (
+            <div className={`w-full h-full bg-gradient-to-br ${selectedPhoto.color} to-black flex items-center justify-center text-8xl`}>
+              📷
+            </div>
+          )}
+          {/* Resim üzerine hafif bir karartma (Metin okunurluğu için) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
+        </div>
+        
+        {/* İçerik Alanı */}
+        <div className="p-8 md:p-12 text-center -mt-16 relative z-20">
+          <span className="text-orange-500 font-black text-xs md:text-sm uppercase tracking-[0.3em] mb-3 block">
+            HSD BEUN ANISI
+          </span>
+          <h3 className="text-white font-extrabold text-3xl md:text-5xl mb-4 italic tracking-tighter">
+            {selectedPhoto.Title}
+          </h3>
+          <p className="text-gray-400 text-sm md:text-lg leading-relaxed max-w-2xl mx-auto font-medium">
+            {selectedPhoto.Description}
+          </p>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none" />
     </section>
