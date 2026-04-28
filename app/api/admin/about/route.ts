@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 import pool from '@/lib/db';
 
+// GET: Veritabanındaki tüm kartları dinamik olarak getirir
 export async function GET() {
   try {
     const result = await pool.query('SELECT * FROM "AboutContent" ORDER BY "ContentID" ASC');
-    return NextResponse.json(result.rows); // Direkt listeyi dönüyoruz
+    return NextResponse.json(result.rows);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-// CREATE: Yeni bir bölüm ekler
+// POST: Yeni bir kart ekleme (Admin panelinden basınca çalışır)
 export async function POST(request: Request) {
   try {
     const { SectionKey, Title, BodyText } = await request.json();
@@ -23,7 +24,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
 // UPDATE: Mevcut bölümü günceller
 export async function PUT(request: Request) {
   try {
