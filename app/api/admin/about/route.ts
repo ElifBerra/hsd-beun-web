@@ -1,12 +1,25 @@
 import { NextResponse } from "next/server";
 import pool from '@/lib/db';
 
-// READ: Tüm bölümleri getirir
 export async function GET() {
   try {
-    const result = await pool.query('SELECT * FROM "AboutContent" ORDER BY "ContentID" ASC');
-    return NextResponse.json(result.rows);
+    // Veritabanındaki tüm satırları çekiyoruz
+    const result = await pool.query('SELECT * FROM "AboutContent"');
+    
+    // Frontend'in (anasayfanın) beklediği formatta bir obje oluşturuyoruz
+    const data: any = {};
+    
+    result.rows.forEach((row: any) => {
+      // Her bir SectionKey'i (mission, vision vb.) birer anahtar yapıyoruz
+      data[row.SectionKey] = {
+        Title: row.Title,
+        BodyText: row.BodyText
+      };
+    });
+
+    return NextResponse.json(data);
   } catch (error: any) {
+    console.error("Anasayfa About Hatası:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
