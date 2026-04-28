@@ -4,7 +4,6 @@ import Link from 'next/link';
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-zinc-950 text-white font-sans overflow-x-hidden">
-      {/* Sidebar - Sol Menü */}
       <aside className="w-64 bg-zinc-900 border-r border-white/5 p-6 flex flex-col fixed h-full z-50">
         <div className="mb-10">
           <h1 className="text-2xl font-black text-orange-500 italic tracking-tighter">HSD ADMIN</h1>

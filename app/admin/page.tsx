@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   return (
     <div>
       <header className="mb-8">
-        <h2 className="text-3xl font-bold">Hoş Geldin, Elif! 🧡</h2>
+        <h2 className="text-3xl font-bold">Hoş Geldin! 🧡</h2>
         <p className="text-zinc-400 font-medium italic">HSD BEUN Kontrol Merkezi</p>
       </header>
 
