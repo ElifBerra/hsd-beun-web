@@ -29,12 +29,8 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" className="scroll-smooth">
-      {/* overflow-x-hidden: Sayfanın sağa kaymasını kökten engeller */}
-      <body className={`${inter.className} bg-black text-white antialiased overflow-x-hidden w-full relative`}>
-        {/* main kapsayıcısı bileşenlerin düzgün hizalanmasını sağlar */}
-        <main className="flex min-h-screen flex-col items-center w-full">
-          {children}
-        </main>
+      <body className={`${inter.className} bg-black text-white antialiased overflow-x-hidden`}>
+        {children}
       </body>
     </html>
   );
