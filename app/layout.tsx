@@ -7,8 +7,8 @@ export const metadata = {
   title: "HSD BEUN | Huawei Student Developers",
   description: "Zonguldak Bülent Ecevit Üniversitesi Huawei Student Developers Topluluğu resmi web sitesi. Geleceği birlikte kodluyoruz!",
   icons: {
-  icon: "/favicon.ico",
-},
+    icon: "/favicon.ico",
+  },
   openGraph: {
     title: "HSD BEUN | Geleceği Kodluyoruz",
     description: "BEUN Huawei Student Developers topluluğuna katıl, etkinliklerden haberdar ol!",
@@ -29,8 +29,12 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" className="scroll-smooth">
-      <body className={inter.className}>
-        {children}
+      {/* overflow-x-hidden: Sayfanın sağa kaymasını kökten engeller */}
+      <body className={`${inter.className} bg-black text-white antialiased overflow-x-hidden w-full relative`}>
+        {/* main kapsayıcısı bileşenlerin düzgün hizalanmasını sağlar */}
+        <main className="flex min-h-screen flex-col items-center w-full">
+          {children}
+        </main>
       </body>
     </html>
   );
