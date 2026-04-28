@@ -5,19 +5,15 @@ export async function GET() {
   try {
     const result = await pool.query('SELECT * FROM "AboutContent" LIMIT 1');
     
-    // Eğer veritabanı boşsa frontend patlamasın diye boş bir obje döneriz
-    if (result.rows.length === 0) {
-      return NextResponse.json({ 
-        SectionKey: "about", 
-        Title: "Hakkımızda", 
-        BodyText: "" 
-      });
-    }
+    // Eğer veritabanında satır yoksa, frontend'in çökmemesi için varsayılan bir obje dönüyoruz
+    const defaultData = {
+      SectionKey: "about",
+      Title: "Hakkımızda",
+      BodyText: "Lütfen içerik giriniz."
+    };
 
-    // result.rows[0] diyerek listenin İLK elemanını (objeyi) gönderiyoruz
-    return NextResponse.json(result.rows[0]);
+    return NextResponse.json(result.rows[0] || defaultData);
   } catch (error: any) {
-    console.error("PostgreSQL About GET Hatası:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
