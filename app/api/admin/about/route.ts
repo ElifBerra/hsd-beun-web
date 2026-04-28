@@ -5,15 +5,24 @@ export async function GET() {
   try {
     const result = await pool.query('SELECT * FROM "AboutContent" LIMIT 1');
     
-    // Eğer veritabanında satır yoksa, frontend'in çökmemesi için varsayılan bir obje dönüyoruz
-    const defaultData = {
-      SectionKey: "about",
-      Title: "Hakkımızda",
-      BodyText: "Lütfen içerik giriniz."
-    };
+    if (result.rows.length === 0) {
+      return NextResponse.json({ Title: "", BodyText: "" });
+    }
 
-    return NextResponse.json(result.rows[0] || defaultData);
+    const row = result.rows[0];
+
+    // Frontend büyük/küçük harf duyarlı olabilir. 
+    // Eğer admin sayfan boş geliyorsa, iki ihtimali de kapsayacak şekilde gönderelim:
+    return NextResponse.json({
+      ...row,
+      Title: row.Title, // Eğer frontend Title bekliyorsa
+      BodyText: row.BodyText, // Eğer frontend BodyText bekliyorsa
+      title: row.Title, // Eğer frontend title bekliyorsa
+      bodyText: row.BodyText // Eğer frontend bodyText bekliyorsa
+    });
+
   } catch (error: any) {
+    console.error("GET Hatası:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
