@@ -3,15 +3,11 @@ import pool from '@/lib/db';
 
 export async function GET() {
   try {
-    // Tüm satırları çekiyoruz (zaten 1 satır var ama liste olarak dönecek)
     const result = await pool.query('SELECT * FROM "AboutContent"');
-    
-    // result.rows her zaman bir arraydir [ { ... } ]
-    return NextResponse.json(result.rows); 
-    
-  } catch (error: any) {
-    console.error("PostgreSQL About GET Hatası:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // Veritabanındaki tüm satırları (about, mission, vision, values) liste olarak döner
+    return NextResponse.json(result.rows);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 
