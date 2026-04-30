@@ -2,8 +2,8 @@ import Link from 'next/link';
 
 const Navbar = () => {
   return (
-    <nav className="fixed w-full z-100 bg-black/70 backdrop-blur-md border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-0 left-0 w-full z-[100] bg-black/80 backdrop-blur-md border-b border-white/10 h-16">
+     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
         <div className="flex items-center justify-between h-16">
           {/* Sol Kısım: Logo */}
           <div className="flex items-center">
