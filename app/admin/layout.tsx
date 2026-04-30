@@ -49,8 +49,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content Area - Sidebar genişliği kadar soldan boşluk bırakır (ml-64) */}
-      <main className="flex-1 ml-64 p-8 lg:p-12 min-h-screen">
-        {children}
+      <main className="flex-1 overflow-y-auto bg-black">
+        <div className="p-6 md:p-10"> {/* Buradaki padding'i düşürerek başlığı yukarı taşıdık */}
+          {children}
+        </div>
       </main>
     </div>
   );
