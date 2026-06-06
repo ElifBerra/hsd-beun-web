@@ -1,5 +1,7 @@
 ## 🚀 HSD BEUN | Huawei Student Developers Web Projesi
 
+ ### https://hsdbeun.vercel.app/
+
 
   Bu proje, Zonguldak Bülent Ecevit Üniversitesi Huawei Student Developers (HSD) topluluğu kapsamında, kampüs genelindeki etkinlikleri, duyuruları, ekip yönetimini ve topluluk anılarını dinamik olarak yönetmek amacıyla geliştirilmiş resmi web sitesi ve yönetim panelidir (CMS).
 
