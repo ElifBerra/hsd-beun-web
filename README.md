@@ -1,9 +1,11 @@
 🚀 HSD BEUN | Huawei Student Developers Web Projesi
+
+
   Bu proje, Zonguldak Bülent Ecevit Üniversitesi Huawei Student Developers (HSD) topluluğu kapsamında, kampüs genelindeki etkinlikleri, duyuruları, ekip yönetimini ve topluluk anılarını dinamik olarak yönetmek amacıyla geliştirilmiş resmi web sitesi ve yönetim panelidir (CMS).
 
-🛠️ Kullanılan Teknolojiler ve Yapılar
+#🛠️ Kullanılan Teknolojiler ve Yapılar
 
-💻 Backend & Mimari
+#💻 Backend & Mimari
 
 :🏗 Next.js (App Router)
 
@@ -22,7 +24,7 @@
   – Admin panelinden yapılan değişikliklerin anasayfaya anında yansımasını sağlayan cache kontrolü.
 
 
-🎨 Frontend & Animasyon:
+#🎨 Frontend & Animasyon:
 
 🅱️ Tailwind CSS
 
@@ -37,7 +39,7 @@
   – Admin Dashboard ve kullanıcı arayüzü (Landing Page) için çakışmaları önleyen izole edilmiş esnek mimari.
 
 
-✨ Özellikler
+#✨ Özellikler
 
 ✔ Dinamik İçerik Editörü (CMS)
 
